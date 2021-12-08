@@ -2,12 +2,12 @@
 name = "saku"
 version = "0.1.0"
 edition = "2021"
-readme = "./README.md"
-description = """
-Provides an implementation of today's most used tokenizers,
-with a focus on performances and versatility.
-"""
+readme = "README.md"
+description = "A simple yet efficient Japanese Sentence Tokenizer."
 exclude = ["rust-toolchain", "target/*", "Cargo.lock", "benches/*.txt", "benches/*.json", "data/*"]
+license = "MIT"
+repository = "https://github.com/hppRC/saku"
+homepage = "https://github.com/hppRC/saku"
 
 [lib]
 name = "saku"
