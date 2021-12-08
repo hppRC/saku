@@ -2,7 +2,30 @@
 name = "saku"
 version = "0.1.0"
 edition = "2021"
+readme = "./README.md"
+description = """
+Provides an implementation of today's most used tokenizers,
+with a focus on performances and versatility.
+"""
+exclude = ["rust-toolchain", "target/*", "Cargo.lock", "benches/*.txt", "benches/*.json", "data/*"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "saku"
+path = "src/lib.rs"
+bench = false
+
+# [[bin]]
+# name = "cli"
+# path = "src/cli.rs"
+# bench = false
 
 [dependencies]
+
+
+[dev-dependencies]
+criterion = "0.3.5"
+pprof = { version = "0.6", features = ["flamegraph", "criterion"] }
+
+[[bench]]
+name = "basic"
+harness = false
