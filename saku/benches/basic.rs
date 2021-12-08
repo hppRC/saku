@@ -1,8 +1,8 @@
 extern crate criterion;
-use saku::SentenceTokenizer;
-use std::{fs, time::Duration};
 use criterion::{criterion_group, criterion_main, Criterion};
 use pprof::criterion::{Output, PProfProfiler};
+use saku::SentenceTokenizer;
+use std::{fs, time::Duration};
 
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("basic-tokenize", |b| {

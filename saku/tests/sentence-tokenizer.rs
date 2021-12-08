@@ -5,7 +5,11 @@ fn test_tokenize_short() {
     let document = "どうもこんにちは。私の名前は山田です。「どーも。」で囲んでいます。";
     let tokenizer = SentenceTokenizer::new(None, None);
 
-    let expected = vec!["どうもこんにちは。", "私の名前は山田です。", "「どーも。」で囲んでいます。"];
+    let expected = vec![
+        "どうもこんにちは。",
+        "私の名前は山田です。",
+        "「どーも。」で囲んでいます。",
+    ];
     let actual = tokenizer.tokenize(document, false);
     assert_eq!(expected, actual);
 }
@@ -22,7 +26,7 @@ fn test_tokenize_medium() {
         "吾輩は猫である。",
         "名前はまだない。",
         "どこで生れたか頓（とん）と見当がつかぬ。",
-        "何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。"
+        "何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。",
     ];
     let actual = tokenizer.tokenize(document, false);
     assert_eq!(expected, actual);
