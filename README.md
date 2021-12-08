@@ -1,7 +1,6 @@
 # Saku: Japanese Sentence Tokenizer
 
-**Saku** is a library for splitting Japanese text into sentences based on hand-made rules written in Rust.
-
+**Saku** is a library for splitting Japanese text into sentences based on hand-made rules written in Rust. \
 **"割く(saku)"** means "spliting something" in Japanese.
 
 
