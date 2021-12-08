@@ -1,6 +1,6 @@
 [package]
 name = "saku"
-version = "0.1.5"
+version = "0.1.9"
 edition = "2021"
 readme = "README.md"
 
@@ -9,5 +9,13 @@ name = "saku"
 crate-type = ["cdylib"]
 
 [dependencies]
+anyhow = "1.0.51"
 pyo3 = {version = "0.15.1", features = ["extension-module"]}
 regex = "1.5.4"
+
+[dev-dependencies]
+criterion = "0.3.5"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
