@@ -9,6 +9,8 @@ pub struct SentenceTokenizer {
 impl SentenceTokenizer {
     const DEFAULT_EOS: char = '。';
     const DEFAULT_PATTERNS: [[char; 2]; 3] = [['（', '）'], ['「', '」'], ['『', '』']];
+    const SENTENCES_CAPACITY: usize = 1024;
+    const STRING_CAPACITY: usize = 256;
 
     pub fn new(eos: Option<char>, patterns: Option<&[[char; 2]]>) -> Self {
         let eos: char = eos.unwrap_or(Self::DEFAULT_EOS);
@@ -41,27 +43,20 @@ impl SentenceTokenizer {
         ret
     }
 
-    #[inline]
-    fn is_newline_char(&self, ch: &char) -> bool {
-        (*ch == '\n') | (*ch == '\r')
-    }
-
     // copy if `document` is a reference (&str)
     // move if `document` have an ownership (String)
     #[inline]
     pub fn tokenize(&self, document: impl Into<String>, preserve_newline: bool) -> Vec<String> {
         let document: String = document.into();
-        let sentences_cap = 1024;
-        let string_cap = 256;
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
-        let mut sentences: Vec<String> = Vec::with_capacity(document.len() / sentences_cap);
-        let mut current_sentence: String = String::with_capacity(string_cap);
+        let mut sentences: Vec<String> = Vec::with_capacity(document.len() / Self::SENTENCES_CAPACITY);
+        let mut current_sentence: String = String::with_capacity(Self::STRING_CAPACITY);
 
         for ch in document.chars() {
-            if self.is_newline_char(&ch) {
+            if (ch == '\n') | (ch == '\r') {
                 if preserve_newline {
                     sentences.push(current_sentence);
-                    current_sentence = String::with_capacity(string_cap);
+                    current_sentence = String::with_capacity(Self::STRING_CAPACITY);
                 }
                 continue;
             }
@@ -76,7 +71,7 @@ impl SentenceTokenizer {
             if ch == self.eos {
                 current_sentence.push(ch);
                 sentences.push(current_sentence);
-                current_sentence = String::with_capacity(string_cap);
+                current_sentence = String::with_capacity(Self::STRING_CAPACITY);
             } else {
                 current_sentence.push(ch);
             }
