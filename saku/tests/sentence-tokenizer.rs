@@ -63,3 +63,19 @@ fn test_tokenize_complex() {
     let actual = tokenizer.tokenize(document, false);
     assert_eq!(expected, actual);
 }
+
+// The current version of Saku can't deal doubly nested parentheses appearently.
+#[test]
+fn test_tokenize_complex_doubly_nested() {
+    let document = "吾輩は「猫である。『『名前はまだない。』』どこで生れたか」頓（とん）と見当がつかぬ。何でも（（薄暗い。。。）じめじめした。）所で『ニャーニャー。』泣いていた。事だけは記憶している。";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec![
+        "吾輩は「猫である。『『名前はまだない。』』どこで生れたか」頓（とん）と見当がつかぬ。",
+        "何でも（（薄暗い。。。）じめじめした。）所で『ニャーニャー。』泣いていた。",
+        "事だけは記憶している。",
+    ];
+    let actual = tokenizer.tokenize(document, false);
+    assert_ne!(expected, actual);
+}
+

@@ -1,3 +1,5 @@
+// use rayon::prelude::*;
+
 pub struct SentenceTokenizer {
     eos: char,
     left_patterns: Vec<char>,
@@ -22,19 +24,21 @@ impl SentenceTokenizer {
     }
 
     #[inline]
-    fn switch_flags(&self, ch: &char, flags: &mut Vec<bool>) {
-        for (i, l) in self.left_patterns.iter().enumerate() {
+    fn switch_flags_retun_in_parens(&self, ch: &char, flags: &mut Vec<bool>) -> bool {
+        for (l, f) in self.left_patterns.iter().zip(flags.iter_mut()) {
             if ch == l {
-                flags[i] = true;
-                return;
+                *f = true;
+                return true;
             }
         }
-        for (i, r) in self.right_patterns.iter().enumerate() {
+        let mut ret = false;
+        for (r, f) in self.right_patterns.iter().zip(flags.iter_mut()) {
             if ch == r {
-                flags[i] = false;
-                return;
+                *f = false;
             }
-        }
+            ret |= *f;
+        };
+        ret
     }
 
     #[inline]
@@ -43,34 +47,36 @@ impl SentenceTokenizer {
     }
 
     // copy if `document` is a reference (&str)
-    // move if `document` have a ownership (String)
+    // move if `document` have an ownership (String)
     #[inline]
     pub fn tokenize(&self, document: impl Into<String>, preserve_newline: bool) -> Vec<String> {
         let document: String = document.into();
-        let cap = 128;
+        let sentences_cap = 1024;
+        let string_cap = 256;
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
-        let mut sentences: Vec<String> = vec![];
-        let mut current_sentence: String = String::with_capacity(cap);
+        let mut sentences: Vec<String> = Vec::with_capacity(document.len() / sentences_cap);
+        let mut current_sentence: String = String::with_capacity(string_cap);
 
         for ch in document.chars() {
             if self.is_newline_char(&ch) {
                 if preserve_newline {
                     sentences.push(current_sentence);
-                    current_sentence = String::with_capacity(cap);
+                    current_sentence = String::with_capacity(string_cap);
                 }
                 continue;
             }
 
-            self.switch_flags(&ch, &mut flags);
-            if flags.iter().any(|f| *f) {
+            let in_parens = self.switch_flags_retun_in_parens(&ch, &mut flags);
+            if in_parens {
                 current_sentence.push(ch);
                 continue;
             }
 
+            // During not in parens, simply we check whether the character is eos or not.
             if ch == self.eos {
                 current_sentence.push(ch);
                 sentences.push(current_sentence);
-                current_sentence = String::with_capacity(cap);
+                current_sentence = String::with_capacity(string_cap);
             } else {
                 current_sentence.push(ch);
             }
