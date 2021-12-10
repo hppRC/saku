@@ -7,9 +7,9 @@ use std::{fs, time::Duration};
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("basic-tokenize", |b| {
         let data_path = "../data/medium.txt";
-        let tokenizer = SentenceTokenizer::new(None, None);
+        let tokenizer = SentenceTokenizer::new(None, None, false);
         let text = fs::read_to_string(data_path).unwrap();
-        b.iter(|| tokenizer.tokenize(text.clone(), false))
+        b.iter(|| tokenizer.tokenize(&text))
     });
 }
 

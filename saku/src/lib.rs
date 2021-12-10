@@ -1,9 +1,8 @@
-// use rayon::prelude::*;
-
 pub struct SentenceTokenizer {
     eos: char,
     left_patterns: Vec<char>,
     right_patterns: Vec<char>,
+    preserve_newline: bool,
 }
 
 impl SentenceTokenizer {
@@ -12,7 +11,7 @@ impl SentenceTokenizer {
     const SENTENCES_CAPACITY: usize = 1024;
     const STRING_CAPACITY: usize = 256;
 
-    pub fn new(eos: Option<char>, patterns: Option<&[[char; 2]]>) -> Self {
+    pub fn new(eos: Option<char>, patterns: Option<&[[char; 2]]>, preserve_newline: bool) -> Self {
         let eos: char = eos.unwrap_or(Self::DEFAULT_EOS);
         let patterns: Vec<[char; 2]> = patterns.unwrap_or(&Self::DEFAULT_PATTERNS).to_vec();
         let left_patterns: Vec<char> = patterns.iter().map(|p| p[0]).collect();
@@ -22,6 +21,7 @@ impl SentenceTokenizer {
             eos,
             left_patterns,
             right_patterns,
+            preserve_newline,
         }
     }
 
@@ -35,9 +35,7 @@ impl SentenceTokenizer {
         }
         let mut ret = false;
         for (r, f) in self.right_patterns.iter().zip(flags.iter_mut()) {
-            if ch == r {
-                *f = false;
-            }
+            *f &= !(ch == r);
             ret |= *f;
         };
         ret
@@ -46,7 +44,7 @@ impl SentenceTokenizer {
     // copy if `document` is a reference (&str)
     // move if `document` have an ownership (String)
     #[inline]
-    pub fn tokenize(&self, document: impl Into<String>, preserve_newline: bool) -> Vec<String> {
+    pub fn tokenize(&self, document: impl Into<String>) -> Vec<String> {
         let document: String = document.into();
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
         let mut sentences: Vec<String> = Vec::with_capacity(document.len() / Self::SENTENCES_CAPACITY);
@@ -54,7 +52,7 @@ impl SentenceTokenizer {
 
         for ch in document.chars() {
             if (ch == '\n') | (ch == '\r') {
-                if preserve_newline {
+                if self.preserve_newline {
                     sentences.push(current_sentence);
                     current_sentence = String::with_capacity(Self::STRING_CAPACITY);
                 }
