@@ -78,4 +78,3 @@ fn test_tokenize_complex_doubly_nested() {
     let actual = tokenizer.tokenize(document);
     assert_ne!(expected, actual);
 }
-
