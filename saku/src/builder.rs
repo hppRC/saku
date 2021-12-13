@@ -4,7 +4,6 @@ const DEFAULT_EOS: char = '。';
 const DEFAULT_LEFT_PATTERNS: [char; 3] = ['（', '「', '『'];
 const DEFAULT_RIGHT_PATTERNS: [char; 3] = ['）', '」', '』'];
 
-
 #[derive(Clone, Debug)]
 pub struct SentenceTokenizerBuilder<EOSType, PatternsType, PreserveNewlineType> {
     pub(crate) eos: EOSType,
@@ -32,7 +31,6 @@ impl SentenceTokenizerBuilder<(), (), ()> {
         }
     }
 }
-
 
 impl<PatternsType, PreserveNewlineType>
     SentenceTokenizerBuilder<(), PatternsType, PreserveNewlineType>
@@ -80,8 +78,7 @@ impl<EOSType, PatternsType> SentenceTokenizerBuilder<EOSType, PatternsType, ()> 
     }
 }
 
-impl SentenceTokenizerBuilder<char, (), ()>
-{
+impl SentenceTokenizerBuilder<char, (), ()> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: self.eos,
@@ -91,8 +88,7 @@ impl SentenceTokenizerBuilder<char, (), ()>
         }
     }
 }
-impl SentenceTokenizerBuilder<(), Vec<char>, ()>
-{
+impl SentenceTokenizerBuilder<(), Vec<char>, ()> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: DEFAULT_EOS,
@@ -102,8 +98,7 @@ impl SentenceTokenizerBuilder<(), Vec<char>, ()>
         }
     }
 }
-impl SentenceTokenizerBuilder<(), (), bool>
-{
+impl SentenceTokenizerBuilder<(), (), bool> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: DEFAULT_EOS,
@@ -113,47 +108,43 @@ impl SentenceTokenizerBuilder<(), (), bool>
         }
     }
 }
-impl SentenceTokenizerBuilder<char, Vec<char>, ()>
-{
+impl SentenceTokenizerBuilder<char, Vec<char>, ()> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: self.eos,
             left_patterns: self.left_patterns.clone(),
             right_patterns: self.right_patterns.clone(),
-            preserve_newline: false
+            preserve_newline: false,
         }
     }
 }
-impl SentenceTokenizerBuilder<(), Vec<char>, bool>
-{
+impl SentenceTokenizerBuilder<(), Vec<char>, bool> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: DEFAULT_EOS,
             left_patterns: self.left_patterns.clone(),
             right_patterns: self.right_patterns.clone(),
-            preserve_newline: self.preserve_newline
+            preserve_newline: self.preserve_newline,
         }
     }
 }
-impl SentenceTokenizerBuilder<char, (), bool>
-{
+impl SentenceTokenizerBuilder<char, (), bool> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: self.eos,
             left_patterns: DEFAULT_LEFT_PATTERNS.to_vec(),
             right_patterns: DEFAULT_RIGHT_PATTERNS.to_vec(),
-            preserve_newline: self.preserve_newline
+            preserve_newline: self.preserve_newline,
         }
     }
 }
-impl SentenceTokenizerBuilder<char, Vec<char>, bool>
-{
+impl SentenceTokenizerBuilder<char, Vec<char>, bool> {
     pub fn build(&self) -> SentenceTokenizer {
         SentenceTokenizer {
             eos: self.eos,
             left_patterns: self.left_patterns.clone(),
             right_patterns: self.right_patterns.clone(),
-            preserve_newline: self.preserve_newline
+            preserve_newline: self.preserve_newline,
         }
     }
 }
