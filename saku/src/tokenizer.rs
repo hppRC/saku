@@ -15,7 +15,6 @@ impl Default for SentenceTokenizer {
 }
 
 impl SentenceTokenizer {
-    const SENTENCES_CAPACITY: usize = 1024;
     const STRING_CAPACITY: usize = 256;
 
     #[inline]
@@ -41,7 +40,7 @@ impl SentenceTokenizer {
         let document: String = document.into();
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
         let mut sentences: Vec<String> =
-            Vec::with_capacity(document.len() / Self::SENTENCES_CAPACITY);
+            Vec::with_capacity(document.len() / Self::STRING_CAPACITY);
         let mut current_sentence: String = String::with_capacity(Self::STRING_CAPACITY);
 
         for ch in document.chars() {
