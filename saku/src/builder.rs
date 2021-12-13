@@ -149,6 +149,7 @@ impl SentenceTokenizerBuilder<char, Vec<char>, bool> {
     }
 }
 
+#[cfg(test)]
 mod test {
     use crate::*;
 
