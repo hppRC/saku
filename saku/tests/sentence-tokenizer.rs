@@ -78,3 +78,59 @@ fn test_tokenize_complex_doubly_nested() {
     let actual = tokenizer.tokenize(document);
     assert_ne!(expected, actual);
 }
+
+#[test]
+fn test_tokenize_with_sentence_fragment() {
+    let document = "吾輩は猫である。名前はまだない。どこで生れたか頓（とん）と見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー";
+    let tokenizer = SentenceTokenizer::default();
+
+    let expected = vec![
+        "吾輩は猫である。",
+        "名前はまだない。",
+        "どこで生れたか頓（とん）と見当がつかぬ。",
+        "何でも薄暗いじめじめした所でニャーニャー",
+    ];
+    let actual = tokenizer.tokenize(document);
+    assert_eq!(expected, actual);
+}
+
+
+#[test]
+fn test_tokenize_raw_medium() {
+    let document = r"
+吾輩は猫である。名前はまだない。
+どこで生れたか頓（とん）と見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。
+    ".trim();
+    let tokenizer = SentenceTokenizer::default();
+
+    let expected = vec![
+        "吾輩は猫である。",
+        "名前はまだない。",
+        "どこで生れたか頓（とん）と見当がつかぬ。",
+        "何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。",
+    ];
+    let actual = tokenizer.tokenize_raw(document);
+    assert_eq!(expected, actual);
+}
+
+
+#[test]
+fn test_tokenize_raw_complex() {
+    let document = r"
+吾輩は猫である。名前は
+まだない。
+どこで生れたか頓（とん）と
+「見当がつかぬ。何でも薄暗いじめじめした所。でニャーニャー泣いていた」事だけは記憶している。
+    ".trim();
+    let tokenizer = SentenceTokenizer::default();
+
+    let expected = vec![
+        "吾輩は猫である。",
+        "名前は",
+        "まだない。",
+        "どこで生れたか頓（とん）と",
+        "「見当がつかぬ。何でも薄暗いじめじめした所。でニャーニャー泣いていた」事だけは記憶している。",
+    ];
+    let actual = tokenizer.tokenize_raw(document);
+    assert_eq!(expected, actual);
+}

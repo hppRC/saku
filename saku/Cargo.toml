@@ -20,7 +20,6 @@ bench = false
 # bench = false
 
 [dependencies]
-# derive_builder = "0.10.2"
 
 
 [dev-dependencies]
@@ -29,4 +28,8 @@ pprof = { version = "0.6", features = ["flamegraph", "criterion"] }
 
 [[bench]]
 name = "basic"
+harness = false
+
+[[bench]]
+name = "raw"
 harness = false
