@@ -36,38 +36,34 @@ impl SentenceTokenizer {
     // copy if `document` is a reference (&str)
     // move if `document` have an ownership (String)
     #[inline]
-    pub fn tokenize(&self, document: impl Into<String>) -> Vec<String> {
-        let document: String = document.into();
+    pub fn tokenize<'a>(&self, document: &'a str) -> Vec<&'a str> {
+        let mut start: usize = 0;
+        let mut sentences: Vec<&str> = Vec::new();
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
-        let mut sentences: Vec<String> = Vec::with_capacity(document.len() / Self::STRING_CAPACITY);
-        let mut current_sentence: String = String::with_capacity(Self::STRING_CAPACITY);
+        let eos_size = self.eos.len_utf8();
 
-        for ch in document.chars() {
+        for (i, ch) in document.char_indices() {
             if (ch == '\n') | (ch == '\r') {
                 if self.preserve_newline {
-                    sentences.push(current_sentence);
-                    current_sentence = String::with_capacity(Self::STRING_CAPACITY);
+                    sentences.push(&document[start..i - 1]);
+                    start = i + 1;
                 }
                 continue;
             }
 
             let in_parens = self.switch_flags_retun_in_parens(&ch, &mut flags);
             if in_parens {
-                current_sentence.push(ch);
                 continue;
             }
 
             // During not in parens, simply we check whether the character is eos or not.
             if ch == self.eos {
-                current_sentence.push(ch);
-                sentences.push(current_sentence);
-                current_sentence = String::with_capacity(Self::STRING_CAPACITY);
-            } else {
-                current_sentence.push(ch);
+                sentences.push(&document[start..i + eos_size]);
+                start = i + eos_size;
             }
         }
-        if !current_sentence.is_empty() {
-            sentences.push(current_sentence);
+        if start != document.len() {
+            sentences.push(&document[start..document.len()]);
         }
 
         sentences

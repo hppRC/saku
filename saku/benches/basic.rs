@@ -9,7 +9,7 @@ fn criterion_benchmark(c: &mut Criterion) {
         let data_path = "../data/medium.txt";
         let tokenizer = SentenceTokenizer::default();
         let text = fs::read_to_string(data_path).unwrap();
-        b.iter(|| tokenizer.tokenize(text.clone()))
+        b.iter(|| tokenizer.tokenize(&text))
     });
 }
 
