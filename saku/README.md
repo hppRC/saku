@@ -1,1 +1,1 @@
-# Saku: Japanese Sentence Tokenizer
+# Saku: rule-based efficient Japanese Sentence Tokenizer
