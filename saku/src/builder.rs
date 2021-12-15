@@ -44,21 +44,23 @@ impl SentenceTokenizerBuilder {
 
     pub fn build(&self) -> SentenceTokenizer {
         let eos = self.eos;
-        let num_parens: usize = self.left_patterns.len();
+        let num_parens: u8 = self.left_patterns.len() as u8;
 
         let mut chmap: FxHashMap<char, ControlFlow> = FxHashMap::default();
         chmap.insert(eos, ControlFlow::Eos);
         for (flag_id, &l) in self.left_patterns.iter().enumerate() {
-            chmap.insert(l, ControlFlow::LeftParens(flag_id));
+            chmap.insert(l, ControlFlow::LeftParens(flag_id as u8));
         }
         for (flag_id, &r) in self.right_patterns.iter().enumerate() {
-            chmap.insert(r, ControlFlow::RightParens(flag_id));
+            chmap.insert(r, ControlFlow::RightParens(flag_id as u8));
         }
         chmap.insert('\n', ControlFlow::LineBreaks);
         chmap.insert('\r', ControlFlow::LineBreaks);
+        let eos_size = eos.len_utf8();
 
         SentenceTokenizer {
             eos,
+            eos_size,
             num_parens,
             chmap,
         }

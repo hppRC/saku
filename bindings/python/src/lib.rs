@@ -34,12 +34,12 @@ impl PySentenceTokenizer {
         Self { tokenizer }
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn tokenize<'a>(&self, document: &'a str) -> Vec<Cow<'a, str>> {
         self.tokenizer.tokenize(document)
     }
 
-    #[inline]
+    #[inline(always)]
     pub fn tokenize_raw<'a>(&self, document: &'a str) -> Vec<&'a str> {
         self.tokenizer.tokenize_raw(document)
     }
