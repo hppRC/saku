@@ -1,6 +1,6 @@
-use rustc_hash::FxHashSet;
+use rustc_hash::FxHashMap;
 
-use crate::SentenceTokenizer;
+use crate::{ControlFlow, SentenceTokenizer};
 
 const DEFAULT_EOS: char = '。';
 const DEFAULT_LEFT_PATTERNS: [char; 3] = ['（', '「', '『'];
@@ -42,26 +42,27 @@ impl SentenceTokenizerBuilder {
         }
     }
 
-    fn make_flat_patterns(&self) -> Vec<char> {
-        self.left_patterns
-            .clone()
-            .clone()
-            .into_iter()
-            .chain(self.right_patterns.clone().into_iter())
-            .collect()
-    }
-
     pub fn build(&self) -> SentenceTokenizer {
         let eos = self.eos;
-        let flat_patterns: Vec<char> = self.make_flat_patterns();
-        let remainder = [eos, '\n', '\r'];
-        let ch_set: FxHashSet<char> =
-            FxHashSet::from_iter(flat_patterns.into_iter().chain(remainder));
+        let num_parens: u8 = self.left_patterns.len() as u8;
+
+        let mut chmap: FxHashMap<char, ControlFlow> = FxHashMap::default();
+        chmap.insert(eos, ControlFlow::Eos);
+        for (flag_id, &l) in self.left_patterns.iter().enumerate() {
+            chmap.insert(l, ControlFlow::LeftParens(flag_id as u8));
+        }
+        for (flag_id, &r) in self.right_patterns.iter().enumerate() {
+            chmap.insert(r, ControlFlow::RightParens(flag_id as u8));
+        }
+        chmap.insert('\n', ControlFlow::LineBreaks);
+        chmap.insert('\r', ControlFlow::LineBreaks);
+        let eos_size = eos.len_utf8();
+
         SentenceTokenizer {
             eos,
-            left_patterns: self.left_patterns.clone(),
-            right_patterns: self.right_patterns.clone(),
-            ch_set,
+            eos_size,
+            num_parens,
+            chmap,
         }
     }
 }
