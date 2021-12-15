@@ -20,6 +20,7 @@ bench = false
 # bench = false
 
 [dependencies]
+rustc-hash = "1.1.0"
 
 
 [dev-dependencies]

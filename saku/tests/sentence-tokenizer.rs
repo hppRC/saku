@@ -94,7 +94,6 @@ fn test_tokenize_with_sentence_fragment() {
     assert_eq!(expected, actual);
 }
 
-
 #[test]
 fn test_tokenize_raw_medium() {
     let document = r"
@@ -113,7 +112,6 @@ fn test_tokenize_raw_medium() {
     assert_eq!(expected, actual);
 }
 
-
 #[test]
 fn test_tokenize_raw_complex() {
     let document = r"
@@ -121,7 +119,8 @@ fn test_tokenize_raw_complex() {
 まだない。
 どこで生れたか頓（とん）と
 「見当がつかぬ。何でも薄暗いじめじめした所。でニャーニャー泣いていた」事だけは記憶している。
-    ".trim();
+    "
+    .trim();
     let tokenizer = SentenceTokenizer::default();
 
     let expected = vec![

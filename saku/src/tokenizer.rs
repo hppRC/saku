@@ -1,3 +1,6 @@
+use std::borrow::Cow;
+use rustc_hash::FxHashSet;
+
 use crate::SentenceTokenizerBuilder;
 
 #[derive(Clone, Debug)]
@@ -5,6 +8,7 @@ pub struct SentenceTokenizer {
     pub(crate) eos: char,
     pub(crate) left_patterns: Vec<char>,
     pub(crate) right_patterns: Vec<char>,
+    pub(crate) ch_set: FxHashSet<char>,
 }
 
 impl Default for SentenceTokenizer {
@@ -31,20 +35,20 @@ impl SentenceTokenizer {
     }
 
     #[inline]
-    pub fn tokenize(&self, document: &str) -> Vec<String> {
-        self.tokenize_remove_line_breaks(document)
+    pub fn tokenize<'a>(&self, document: &'a str) -> Vec<Cow<'a, str>> {
+        self.tokenize_ignore_line_breaks(document)
     }
 
     #[inline]
-    pub fn tokenize_remove_line_breaks(&self, document: &str) -> Vec<String> {
-        let document = document.trim();
+    pub fn tokenize_ignore_line_breaks<'a>(&self, document: &'a str) -> Vec<Cow<'a, str>> {
+        let document: &'a str = document.trim();
         let mut start: usize = 0;
-        let mut sentences: Vec<String> = Vec::new();
+        let mut sentences: Vec<Cow<'a, str>> = Vec::new();
         let mut sentence: String = String::new();
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
         let eos_size = self.eos.len_utf8();
 
-        for (i, ch) in document.char_indices() {
+        for (i, ch) in document.char_indices().filter(|(_, ch)| self.ch_set.contains(ch)) {
             if (ch == '\n') || (ch == '\r') {
                 sentence.push_str(&document[start..i]);
                 start = i + 1;
@@ -60,15 +64,23 @@ impl SentenceTokenizer {
             }
 
             if ch == self.eos {
-                sentence.push_str(&document[start..i + eos_size]);
-                sentences.push(sentence);
-                sentence = String::new();
+                if sentence.is_empty() {
+                    sentences.push(Cow::Borrowed(&document[start..i + eos_size]));
+                } else {
+                    sentence.push_str(&document[start..i + eos_size]);
+                    sentences.push(Cow::Owned(sentence));
+                    sentence = String::new();
+                }
                 start = i + eos_size;
             }
         }
         if start < document.len() {
-            sentence.push_str(&document[start..document.len()]);
-            sentences.push(sentence);
+            if sentence.is_empty() {
+                sentences.push(Cow::Borrowed(&document[start..document.len()]));
+            } else {
+                sentence.push_str(&document[start..document.len()]);
+                sentences.push(Cow::Owned(sentence));
+            }
         }
 
         sentences
@@ -84,12 +96,12 @@ impl SentenceTokenizer {
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
         let eos_size = self.eos.len_utf8();
 
-        for (i, ch) in document.char_indices() {
+        for (i, ch) in document.char_indices().filter(|(_, ch)| self.ch_set.contains(ch)) {
             if (ch == '\n') || (ch == '\r') {
                 if i != start {
                     sentences.push(&document[start..i]);
                 }
-                start = i + 1;                    
+                start = i + 1;
                 continue;
             }
 
