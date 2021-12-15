@@ -1,5 +1,5 @@
-use std::borrow::Cow;
 use rustc_hash::FxHashSet;
+use std::borrow::Cow;
 
 use crate::SentenceTokenizerBuilder;
 
@@ -48,7 +48,10 @@ impl SentenceTokenizer {
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
         let eos_size = self.eos.len_utf8();
 
-        for (i, ch) in document.char_indices().filter(|(_, ch)| self.ch_set.contains(ch)) {
+        for (i, ch) in document
+            .char_indices()
+            .filter(|(_, ch)| self.ch_set.contains(ch))
+        {
             if (ch == '\n') || (ch == '\r') {
                 sentence.push_str(&document[start..i]);
                 start = i + 1;
@@ -96,7 +99,10 @@ impl SentenceTokenizer {
         let mut flags: Vec<bool> = vec![false; self.left_patterns.len()];
         let eos_size = self.eos.len_utf8();
 
-        for (i, ch) in document.char_indices().filter(|(_, ch)| self.ch_set.contains(ch)) {
+        for (i, ch) in document
+            .char_indices()
+            .filter(|(_, ch)| self.ch_set.contains(ch))
+        {
             if (ch == '\n') || (ch == '\r') {
                 if i != start {
                     sentences.push(&document[start..i]);

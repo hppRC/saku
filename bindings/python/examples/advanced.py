@@ -1,8 +1,8 @@
 from saku import SentenceTokenizer
 
 tokenizer = SentenceTokenizer(
-    period="。",
-    pattern=r"（.*?）|『.*?』",
+    eos="。",
+    patterns=["（）", "『』"],
 )
 document = "どうもこんにちは。私の名前は山田です。「どーも。」で囲んでいます。"
 
@@ -12,8 +12,8 @@ for s in tokenizer.tokenize(document):
 print("*"*80)
 
 tokenizer = SentenceTokenizer(
-    period="、",
-    patterns=[r"『.*?』"],
+    eos="、",
+    patterns=["『』"],
 )
 document = '''
 ソコヴィアでのウルトロンとの戦いから約1年後、ヒドラの残党ブロック・ラムロウのテロ計画を阻止するため、スティーブ・ロジャース率いるアベンジャーズがナイジェリアの都市ラゴスに出撃する。計画を阻止されたラムロウはスティーブを道連れに自爆を図るが、それを阻止しようとしたワンダの行動により
@@ -30,5 +30,5 @@ for s in tokenizer.tokenize(document):
 
 print("*"*80)
 
-for s in tokenizer.tokenize(document, preserve_newline=True):
+for s in tokenizer.tokenize_raw(document):
     print(s)
