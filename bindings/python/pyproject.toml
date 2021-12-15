@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "saku-py"
+name = "saku"
 version = "0.1.10"
 description = ""
 authors = ["Hayato Tsukagoshi <hpp.ricecake@gmail.com>"]

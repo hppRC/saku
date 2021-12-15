@@ -1,5 +1,5 @@
 [package]
-name = "saku-py"
+name = "saku"
 version = "0.1.10"
 edition = "2021"
 readme = "README.md"
