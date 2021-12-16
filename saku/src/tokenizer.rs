@@ -1,6 +1,5 @@
-use std::borrow::Cow;
-
 use crate::{CharTable, ControlFlow, SentenceTokenizerBuilder};
+use std::borrow::Cow;
 
 #[derive(Clone, Debug)]
 pub struct SentenceTokenizer {
@@ -104,9 +103,9 @@ impl SentenceTokenizer {
         }
         if start < document.len() {
             if sentence.is_empty() {
-                sentences.push(Cow::Borrowed(&document[start..document.len()]));
+                sentences.push(Cow::Borrowed(&document[start..]));
             } else {
-                sentence.push_str(&document[start..document.len()]);
+                sentence.push_str(&document[start..]);
                 sentences.push(Cow::Owned(sentence));
             }
         }
@@ -149,6 +148,9 @@ impl SentenceTokenizer {
                     }
                 }
             }
+        }
+        if start < document.len() {
+            sentences.push(&document[start..]);
         }
 
         sentences

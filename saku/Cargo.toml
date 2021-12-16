@@ -1,6 +1,6 @@
 [package]
 name = "saku"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 readme = "README.md"
 description = "A simple yet efficient rule-based Japanese Sentence Tokenizer."
@@ -20,8 +20,6 @@ bench = false
 # bench = false
 
 [dependencies]
-rustc-hash = "1.1.0"
-
 
 [dev-dependencies]
 criterion = "0.3.5"

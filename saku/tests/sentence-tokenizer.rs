@@ -132,3 +132,20 @@ fn test_tokenize_raw_complex() {
     let actual = tokenizer.tokenize_raw(document);
     assert_eq!(expected, actual);
 }
+
+#[test]
+fn test_tokenize_raw_with_sentence_fragment() {
+    let document = "吾輩は猫である。名前はまだない。どこで生れたか
+頓（とん）と見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー";
+    let tokenizer = SentenceTokenizer::default();
+
+    let expected = vec![
+        "吾輩は猫である。",
+        "名前はまだない。",
+        "どこで生れたか",
+        "頓（とん）と見当がつかぬ。",
+        "何でも薄暗いじめじめした所でニャーニャー",
+    ];
+    let actual = tokenizer.tokenize_raw(document);
+    assert_eq!(expected, actual);
+}

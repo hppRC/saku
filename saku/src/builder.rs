@@ -1,5 +1,3 @@
-// use rustc_hash::FxHashMap;
-
 use crate::{CharTable, ControlFlow, SentenceTokenizer};
 
 const DEFAULT_EOS: char = '。';
