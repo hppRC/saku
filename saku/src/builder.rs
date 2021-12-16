@@ -1,6 +1,6 @@
-use rustc_hash::FxHashMap;
+// use rustc_hash::FxHashMap;
 
-use crate::{ControlFlow, SentenceTokenizer};
+use crate::{CharTable, ControlFlow, SentenceTokenizer};
 
 const DEFAULT_EOS: char = '。';
 const DEFAULT_LEFT_PATTERNS: [char; 3] = ['（', '「', '『'];
@@ -46,23 +46,23 @@ impl SentenceTokenizerBuilder {
         let eos = self.eos;
         let num_parens: u8 = self.left_patterns.len() as u8;
 
-        let mut chmap: FxHashMap<char, ControlFlow> = FxHashMap::default();
-        chmap.insert(eos, ControlFlow::Eos);
+        let mut char_table: CharTable = CharTable::default();
+        char_table.insert(eos, ControlFlow::Eos);
         for (flag_id, &l) in self.left_patterns.iter().enumerate() {
-            chmap.insert(l, ControlFlow::LeftParens(flag_id as u8));
+            char_table.insert(l, ControlFlow::LeftParens(flag_id as u8));
         }
         for (flag_id, &r) in self.right_patterns.iter().enumerate() {
-            chmap.insert(r, ControlFlow::RightParens(flag_id as u8));
+            char_table.insert(r, ControlFlow::RightParens(flag_id as u8));
         }
-        chmap.insert('\n', ControlFlow::LineBreaks);
-        chmap.insert('\r', ControlFlow::LineBreaks);
+        char_table.insert('\n', ControlFlow::LineBreaks);
+        char_table.insert('\r', ControlFlow::LineBreaks);
         let eos_size = eos.len_utf8();
 
         SentenceTokenizer {
             eos,
             eos_size,
             num_parens,
-            chmap,
+            char_table,
         }
     }
 }

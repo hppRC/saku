@@ -1,25 +1,17 @@
-use rustc_hash::FxHashMap;
 use std::borrow::Cow;
 
-use crate::SentenceTokenizerBuilder;
-
-#[derive(Clone, Debug)]
-pub(crate) enum ControlFlow {
-    Eos,
-    LineBreaks,
-    RightParens(u8),
-    LeftParens(u8),
-}
+use crate::{CharTable, ControlFlow, SentenceTokenizerBuilder};
 
 #[derive(Clone, Debug)]
 pub struct SentenceTokenizer {
     pub eos: char,
     pub(crate) eos_size: usize,
     pub(crate) num_parens: u8,
-    pub(crate) chmap: FxHashMap<char, ControlFlow>,
+    pub(crate) char_table: CharTable,
 }
 
 impl Default for SentenceTokenizer {
+    #[inline(always)]
     fn default() -> Self {
         SentenceTokenizerBuilder::new().build()
     }
@@ -28,7 +20,8 @@ impl Default for SentenceTokenizer {
 impl SentenceTokenizer {
     #[inline(always)]
     fn char_to_control_flow(&self, ch: &char) -> Option<&ControlFlow> {
-        self.chmap.get(ch)
+        // self.chmap.get(ch)
+        self.char_table.get(*ch)
     }
 
     #[inline(always)]
@@ -49,13 +42,23 @@ impl SentenceTokenizer {
     }
 
     #[inline(always)]
-    pub fn process_left_parens<'a>(&self, flags: &mut Vec<u8>, nest_count: &mut u8, flag_id: usize) {
+    pub fn process_left_parens<'a>(
+        &self,
+        flags: &mut Vec<u8>,
+        nest_count: &mut u8,
+        flag_id: usize,
+    ) {
         flags[flag_id] += 1;
         *nest_count += 1;
     }
 
     #[inline(always)]
-    pub fn process_right_parens<'a>(&self, flags: &mut Vec<u8>, nest_count: &mut u8, flag_id: usize) {
+    pub fn process_right_parens<'a>(
+        &self,
+        flags: &mut Vec<u8>,
+        nest_count: &mut u8,
+        flag_id: usize,
+    ) {
         if flags[flag_id] > 0 {
             flags[flag_id] -= 1;
             *nest_count -= 1;
