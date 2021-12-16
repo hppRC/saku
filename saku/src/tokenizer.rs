@@ -131,6 +131,7 @@ impl SentenceTokenizer {
                         if i != start {
                             sentences.push(&document[start..i]);
                         }
+                        nest_count = 0;
                         start = i + 1;
                     }
                     ControlFlow::LeftParens(flag_id) => {

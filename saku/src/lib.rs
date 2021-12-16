@@ -9,7 +9,7 @@ pub(crate) enum ControlFlow {
     RightParens(u8),
     LeftParens(u8),
 }
+pub(crate) use char_table::CharTable;
 
 pub use builder::SentenceTokenizerBuilder;
-pub(crate) use char_table::CharTable;
 pub use tokenizer::SentenceTokenizer;

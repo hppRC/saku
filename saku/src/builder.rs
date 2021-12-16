@@ -14,6 +14,7 @@ pub struct SentenceTokenizerBuilder {
 }
 
 impl SentenceTokenizerBuilder {
+    #[inline(always)]
     pub fn new() -> SentenceTokenizerBuilder {
         SentenceTokenizerBuilder {
             eos: DEFAULT_EOS,
@@ -24,6 +25,7 @@ impl SentenceTokenizerBuilder {
 }
 
 impl SentenceTokenizerBuilder {
+    #[inline(always)]
     pub fn eos(self, eos: char) -> SentenceTokenizerBuilder {
         SentenceTokenizerBuilder {
             eos,
@@ -32,6 +34,7 @@ impl SentenceTokenizerBuilder {
         }
     }
 
+    #[inline(always)]
     pub fn patterns(self, patterns: &[[char; 2]]) -> SentenceTokenizerBuilder {
         let left_patterns: Vec<char> = patterns.iter().map(|p| p[0]).collect();
         let right_patterns: Vec<char> = patterns.iter().map(|p| p[1]).collect();
@@ -42,6 +45,7 @@ impl SentenceTokenizerBuilder {
         }
     }
 
+    #[inline(always)]
     pub fn build(&self) -> SentenceTokenizer {
         let eos = self.eos;
         let num_parens: u8 = self.left_patterns.len() as u8;
