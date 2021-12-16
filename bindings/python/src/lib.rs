@@ -12,6 +12,7 @@ pub struct PySentenceTokenizer {
 
 #[pymethods]
 impl PySentenceTokenizer {
+    #[inline(always)]
     #[new]
     fn __new__(eos: Option<String>, patterns: Option<Vec<String>>) -> Self {
         let mut tokenizer_builder = SentenceTokenizerBuilder::new();
