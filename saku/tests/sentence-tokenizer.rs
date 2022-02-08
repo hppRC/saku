@@ -13,6 +13,85 @@ fn test_tokenize_short() {
     let actual = tokenizer.tokenize(document);
     assert_eq!(expected, actual);
 }
+#[test]
+fn test_tokenize_short_mismatch_parenthesis_char_format() {
+    let document = "どうもこんにちは。私の名前は山田です。(どーも。）で囲んでいます。";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec![
+        "どうもこんにちは。",
+        "私の名前は山田です。",
+        "(どーも。",
+        "）で囲んでいます。",
+    ];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn test_tokenize_short_mismatch_parenthesis_char_format_with_custom_pattern() {
+    let document = "「どうもこんにちは。私の名前は山田です。」(どーも。）で囲んでいます。";
+    const PAT :[[char; 2]; 1]=[['(', '）']];
+    let tokenizer = SentenceTokenizer::new(None, Some(&PAT));
+
+    let expected = vec![
+        "「どうもこんにちは。",
+        "私の名前は山田です。",
+        "」(どーも。）で囲んでいます。",
+    ];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn short_nested_parenthesis() {
+    let document = "「どうもこんにちは。私の名前は山田です。(どーも。)で囲んでいます。」";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec!["「どうもこんにちは。私の名前は山田です。(どーも。)で囲んでいます。」"];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn short_missing_right_parenthesis() {
+    let document = "(どうもこんにちは。「どーも。で囲んでいます。";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec!["(どうもこんにちは。", "「どーも。で囲んでいます。"];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn short_missing_left_parenthesis() {
+    let document = "どうもこんにちは。)どーも。」で囲んでいます。";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec!["どうもこんにちは。", ")どーも。", "」で囲んでいます。"];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn short_mismatched_parenthesis() {
+    let document = "「どーも。)で囲んでいます。";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec!["「どーも。)で囲んでいます。"];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn short_mismatched_nested_parenthesis() {
+    let document = "「どーも。)で囲んでいます。(どーも。」で囲んでいます。";
+    let tokenizer = SentenceTokenizer::new(None, None);
+
+    let expected = vec!["「どーも。)で囲んでいます。(どーも。」で囲んでいます。"];
+    let actual = tokenizer.tokenize(document, false);
+    assert_eq!(expected, actual);
+}
 
 #[test]
 fn test_tokenize_medium() {
