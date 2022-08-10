@@ -13,6 +13,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install latest stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
       - name: Test
         run: |
           cd saku
