@@ -12,14 +12,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Install latest stable toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Setup Rust
+        uses: hecrj/setup-rust-action@v1
         with:
-          profile: minimal
-          toolchain: stable
-
+          rust-version: ${{ matrix.rust }}
+      - uses: actions/checkout@v3
       - name: Test
         run: |
           cd saku
