@@ -9,6 +9,7 @@ license = "MIT"
 repository = "https://github.com/hppRC/saku"
 homepage = "https://github.com/hppRC/saku"
 
+
 [lib]
 name = "saku"
 path = "src/lib.rs"
@@ -21,13 +22,26 @@ bench = false
 
 [dependencies]
 
+
 [dev-dependencies]
 criterion = "0.3.5"
+
+
+[target.'cfg(unix)'.dev-dependencies]
 pprof = { version = "0.6", features = ["flamegraph", "criterion"] }
+
+
+[target.'cfg(macos)'.dev-dependencies]
+pprof = { version = "0.6", features = ["flamegraph", "criterion"] }
+
+# to avoid errors such as 'libc not found' on windows
+[target.'cfg(windows)'.dev-dependencies]
+
 
 [[bench]]
 name = "basic"
 harness = false
+
 
 [[bench]]
 name = "raw"
